@@ -14,7 +14,6 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-// Register Infrastructure (UnitOfWork, Repositories)
 builder.Services.AddInfrastructure();
 
 // Register all endpoints from Application assembly dynamically
