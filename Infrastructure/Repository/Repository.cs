@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Persistance;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace Infrastructure.Repository;
@@ -100,5 +101,9 @@ public class Repository<T, TContext> : IRepository<T, TContext>
         _dbSet.RemoveRange(entities);
     }
 
-    
+    public async Task<List<T>> GetMany(Expression<Func<T, bool>> where, CancellationToken cancellation = default)
+    {
+        return await _dbSet.AsNoTracking().Where(where).OrderByDescending(d => d.CreatedDate).ToListAsync();
+    }
+
 }

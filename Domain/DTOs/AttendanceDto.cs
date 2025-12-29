@@ -12,14 +12,20 @@ namespace Domain.DTOs
         public AttendanceStatus Status { get; set; }
     }
 
-    public class AddAttendanceResponse
+    public class MonthlyAttendanceResponse
     {
-        public Guid Id { get; set; }
         public Guid EmployeeId { get; set; }
-        public DateTime Date { get; set; }
-        public DateTime CheckInTime { get; set; }
-        public DateTime? CheckOutTime { get; set; }
-        public AttendanceStatus Status { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public int Year { get; set; }
+        public int Month { get; set; }
+        public List<AttendanceDayDto> Days { get; set; } = new();
+    }
+    public class AttendanceDayDto
+    {
+        public DateOnly Date { get; set; }
+        public string DayName { get; set; } = string.Empty;
+        public DateTimeOffset? CheckInTime { get; set; }
+        public DateTimeOffset? CheckOutTime { get; set; }
+        public AttendanceStatus? Status { get; set; }
+        public bool IsWeekend { get; set; }
     }
 }
