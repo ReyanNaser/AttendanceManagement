@@ -13,5 +13,7 @@ namespace Domain.Entities
         public string City { get; set; }
         public string Designation { get; set; }
         public string Department { get; set; }
+        public Guid? ManagerId { get; set; }
+        public Manager? ReportingManager { get; set; }
     }
 }

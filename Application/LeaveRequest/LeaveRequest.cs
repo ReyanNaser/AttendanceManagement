@@ -1,5 +1,6 @@
 ﻿using Application.Common;
 using Domain.DTOs;
+using Domain.Entities.Enums;
 using Infrastructure.UnitofWork;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -49,7 +50,7 @@ namespace Application.LeaveRequest
                 FromDate = request.FromDate,
                 ToDate = request.ToDate,
                 LeaveType = request.LeaveType,
-                Status = request.Status,
+                Status = LeaveStatus.Pending,
                 Reason = request.Reason
             };
 

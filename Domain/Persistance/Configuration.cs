@@ -42,7 +42,9 @@ public class CommonEntityConfiguration<TEntity> : IEntityTypeConfiguration<TEnti
 
         foreach (var property in typeof(TEntity).GetProperties(BindingFlags.Public | BindingFlags.Instance))
         {
-            if (property.Name != nameof(Common.Id))
+            // Only map simple types, not navigation properties
+            if (property.Name != nameof(Common.Id) && 
+                (property.PropertyType.IsValueType || property.PropertyType == typeof(string)))
             {
                 builder.Property(property.Name).HasColumnName(ToSnakeCase(property.Name));
             }

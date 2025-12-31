@@ -41,7 +41,8 @@ namespace Application.Employee
                 Address = request.Address,
                 City = request.City,
                 Designation = request.Designation,
-                Department = request.Department
+                Department = request.Department,
+                ManagerId = request.ManagerId,
             };
 
             await db.Employees.AddAsync(employee, cancellationToken);

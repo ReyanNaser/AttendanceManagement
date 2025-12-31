@@ -3,6 +3,7 @@ using System;
 using Domain.Persistance;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Domain.Migrations
 {
     [DbContext(typeof(AttendanceDbContext))]
-    partial class AttendanceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251230123747_manageradded")]
+    partial class manageradded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -245,30 +248,15 @@ namespace Domain.Migrations
                         .HasColumnName("created_date")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP(6)");
 
-                    b.Property<string>("Designation")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("designation");
-
                     b.Property<Guid>("EmployeeId")
                         .HasColumnType("uuid")
                         .HasColumnName("employee_id");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("first_name");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
                         .HasDefaultValue(true)
                         .HasColumnName("is_active");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("last_name");
 
                     b.Property<string>("ModifiedBy")
                         .HasMaxLength(100)
@@ -279,7 +267,12 @@ namespace Domain.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("modified_date");
 
+                    b.Property<Guid?>("UserDetailsId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserDetailsId");
 
                     b.ToTable("manager", (string)null);
                 });
@@ -350,6 +343,15 @@ namespace Domain.Migrations
                         .HasForeignKey("ManagerId");
 
                     b.Navigation("ReportingManager");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Manager", b =>
+                {
+                    b.HasOne("Domain.Entities.Employee", "UserDetails")
+                        .WithMany()
+                        .HasForeignKey("UserDetailsId");
+
+                    b.Navigation("UserDetails");
                 });
 
             modelBuilder.Entity("Domain.Entities.Manager", b =>

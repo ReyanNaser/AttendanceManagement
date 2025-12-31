@@ -6,10 +6,7 @@ namespace Domain.DTOs
     public class AddAttendanceRequest
     {
         public Guid EmployeeId { get; set; }
-        public DateOnly Date { get; set; }
-        public DateTimeOffset CheckInTime { get; set; }
-        public DateTimeOffset? CheckOutTime { get; set; }
-        public AttendanceStatus Status { get; set; }
+       
     }
 
     public class MonthlyAttendanceResponse

@@ -1,5 +1,6 @@
 ﻿using Application.Common;
 using Domain.DTOs;
+using Domain.Entities.Enums;
 using Infrastructure.UnitofWork;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -57,7 +58,7 @@ namespace Application.WFHRequest
                 EmployeeId = request.EmployeeId,
                 FromDate = request.FromDate,
                 ToDate = request.ToDate,
-                Status = request.Status,
+                Status = RequestStatus.Pending,
                 Reason = request.Reason
             };
 

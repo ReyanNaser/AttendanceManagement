@@ -13,7 +13,6 @@ namespace Domain.DTOs
         public DateOnly FromDate { get; set; }
         public DateOnly ToDate { get; set; }
         public LeaveType LeaveType { get; set; }
-        public LeaveStatus Status { get; set; }
         public string Reason { get; set; } = string.Empty;
     }
 }
