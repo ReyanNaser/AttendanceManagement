@@ -30,14 +30,6 @@ namespace Domain.Persistance
             modelBuilder.ApplyConfiguration(new CommonEntityConfiguration<LeaveRequest>());
             modelBuilder.ApplyConfiguration(new CommonEntityConfiguration<WorkFromHome>());
             modelBuilder.ApplyConfiguration(new CommonEntityConfiguration<Manager>());
-
-            // Configure Manager - Employee Relationship
-            modelBuilder.Entity<Employee>()
-                .HasOne(e => e.ReportingManager)
-                .WithMany(m => m.ManagedEmployees)
-                .HasForeignKey(e => e.ManagerId)
-                .IsRequired(false);
-
             base.OnModelCreating(modelBuilder);
         }
     }

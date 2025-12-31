@@ -5,7 +5,6 @@ using Infrastructure.UnitofWork;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.LeaveRequest;
 
@@ -17,7 +16,8 @@ public class ApproveLeave : IEndpoint
             .WithName("ApproveLeave")
             .WithTags("Manager Actions")
             .Produces(StatusCodes.Status200OK)
-            .ProducesProblem(StatusCodes.Status400BadRequest);
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .RequireAuthorization(policy => policy.RequireRole("Manager"));
     }
 
     private static async Task<IResult> Handler(ApprovalRequestDto request, IUnitOfWork db,CancellationToken ct)

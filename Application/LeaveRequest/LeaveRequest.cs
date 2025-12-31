@@ -70,7 +70,7 @@ namespace Application.LeaveRequest
             await db.LeaveRequests.AddAsync(leaveRequest, cancellationToken);
             await db.SaveChangesAsync(cancellationToken);
 
-            return Results.Ok("Leave request submitted successfully." );
+            return Results.Created($"/leaverequest/{leaveRequest.Id}", leaveRequest.Id );
         }
     }
 }
