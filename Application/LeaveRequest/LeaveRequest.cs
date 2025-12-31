@@ -44,6 +44,19 @@ namespace Application.LeaveRequest
                 return Results.BadRequest("Leave request already applied for this date." );
             }
 
+            var wfhapplied = await db.WorkFromHomes.AnyAsync(
+                a => a.EmployeeId == request.EmployeeId
+                && a.FromDate <= request.ToDate
+                && a.ToDate >= request.FromDate
+                && a.IsActive,
+                cancellationToken
+                );
+
+            if (wfhapplied)
+            {
+                return Results.BadRequest("Work from already applied for the date.");
+            }
+
             var leaveRequest = new Domain.Entities.LeaveRequest
             {
                 EmployeeId = request.EmployeeId,
