@@ -15,7 +15,8 @@ public class CheckIn : IEndpoint
     {
         app.MapPost("/checkin", Handler)
             .WithName("AddAttendance")
-            .WithTags("Attendance");
+            .WithTags("Attendance")
+            .RequireAuthorization();
     }
 
     private static async Task<IResult> Handler(AddAttendanceRequest request,IUnitOfWork db,CancellationToken cancellationToken)

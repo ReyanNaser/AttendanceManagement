@@ -32,6 +32,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         {
             ValidateIssuer = true,
             ValidIssuers = new[] { builder.Configuration["Authentication:Authority"], builder.Configuration["Authentication:Authority"]?.TrimEnd('/') + "/" }
+            // RoleClaimType = "role" // Removed to allow default mapping (role -> ClaimTypes.Role) to work
         };
     });
 
