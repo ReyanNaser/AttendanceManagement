@@ -22,6 +22,7 @@ namespace Application.Employee
         private static async Task<IResult> Handler(
             CreateEmployeeRequest request,
             IUnitOfWork db,
+            AuthServiceProvider.Protos.AuthService.AuthServiceClient authClient,
             CancellationToken cancellationToken)
         {
             // Check if email already exists
@@ -46,6 +47,31 @@ namespace Application.Employee
             };
 
             await db.Employees.AddAsync(employee, cancellationToken);
+
+            
+            try 
+            {
+                var grpcRequest = new AuthServiceProvider.Protos.CreateUserRequest
+                {
+                    FirstName = request.FirstName,
+                    LastName = request.LastName,
+                    Email = request.Email,
+                    Role = "Employee"
+                };
+
+                var authResponse = await authClient.CreateUserAsync(grpcRequest, cancellationToken: cancellationToken);
+
+                if (!authResponse.Success)
+                {
+                    return Results.BadRequest(new { Error = $"Auth User Creation Failed: {authResponse.Message}" });
+                }
+            }
+            catch (Exception ex)
+            {
+                 // Log error
+                 return Results.Problem($"gRPC Connection Failed: {ex.Message}");
+            }
+
             await db.SaveChangesAsync(cancellationToken);            
 
             return Results.Created($"{employee.Id}",request);

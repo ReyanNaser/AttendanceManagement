@@ -17,7 +17,6 @@ namespace Domain.Persistance
         public DbSet<WorkFromHome> WorkFromHomes { get; set; }
         public DbSet<AttendanceRecord> AttendanceRecords { get; set; }
         public DbSet<Employee> Employees { get; set; }
-        public DbSet<Manager> Managers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -29,7 +28,6 @@ namespace Domain.Persistance
             modelBuilder.ApplyConfiguration(new CommonEntityConfiguration<AttendanceRecord>());
             modelBuilder.ApplyConfiguration(new CommonEntityConfiguration<LeaveRequest>());
             modelBuilder.ApplyConfiguration(new CommonEntityConfiguration<WorkFromHome>());
-            modelBuilder.ApplyConfiguration(new CommonEntityConfiguration<Manager>());
             base.OnModelCreating(modelBuilder);
         }
     }

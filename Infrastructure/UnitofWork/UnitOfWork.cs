@@ -14,7 +14,6 @@ public class UnitOfWork : IUnitOfWork
     private IRepository<AttendanceRecord, AttendanceDbContext>? _attendanceRecords;
     private IRepository<LeaveRequest, AttendanceDbContext>? _leaveRequests;
     private IRepository<WorkFromHome, AttendanceDbContext>? _workFromHomes;
-    private IRepository<Manager, AttendanceDbContext>? _manager;
 
     public UnitOfWork(AttendanceDbContext context)
     {
@@ -33,9 +32,6 @@ public class UnitOfWork : IUnitOfWork
 
     public IRepository<WorkFromHome, AttendanceDbContext> WorkFromHomes =>
         _workFromHomes ??= new Repository<WorkFromHome, AttendanceDbContext>(_context);
-
-    public IRepository<Manager, AttendanceDbContext> Manager => 
-        _manager ??= new Repository<Manager, AttendanceDbContext>(_context);
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

@@ -14,6 +14,6 @@ namespace Domain.Entities
         public string Designation { get; set; }
         public string Department { get; set; }
         public Guid? ManagerId { get; set; }
-        public Manager? ReportingManager { get; set; }
+        //public Manager? ReportingManager { get; set; }
     }
 }

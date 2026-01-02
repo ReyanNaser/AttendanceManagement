@@ -106,4 +106,8 @@ public class Repository<T, TContext> : IRepository<T, TContext>
         return await _dbSet.AsNoTracking().Where(where).OrderByDescending(d => d.CreatedDate).ToListAsync();
     }
 
+    public async Task<List<T>> GetManyTracking(Expression<Func<T, bool>> where, CancellationToken cancellation = default)
+    {
+        return await _dbSet.Where(where).OrderByDescending(d => d.CreatedDate).ToListAsync();
+    }
 }

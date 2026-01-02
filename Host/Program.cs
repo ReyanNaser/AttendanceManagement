@@ -21,6 +21,17 @@ builder.Services.AddInfrastructure();
 // Register all endpoints from Application assembly dynamically
 builder.Services.AddEndpoints(typeof(IEndpoint).Assembly);
 
+// Register gRPC Client for Auth Service
+builder.Services.AddGrpcClient<AuthServiceProvider.Protos.AuthService.AuthServiceClient>(o =>
+{
+    o.Address = new Uri("https://localhost:7144"); // Address of AuthServiceProvider
+});
+
+builder.Services.AddGrpcClient<AuthServiceProvider.Protos.RoleService.RoleServiceClient>(o =>
+{
+    o.Address = new Uri("https://localhost:7144");
+});
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {

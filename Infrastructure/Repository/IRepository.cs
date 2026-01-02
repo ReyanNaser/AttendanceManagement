@@ -14,6 +14,7 @@ public interface IRepository<T, TContext>
     Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
     Task<int> CountAsync(Expression<Func<T, bool>>? predicate = null, CancellationToken cancellationToken = default);
     Task<List<T>> GetMany(Expression<Func<T, bool>> where, CancellationToken cancellation = default);
+    Task<List<T>> GetManyTracking(Expression<Func<T, bool>> where, CancellationToken cancellation = default);
     // Query with includes
     IQueryable<T> Query();
 
