@@ -8,7 +8,6 @@ namespace Domain.Entities.Enums
     {
         Present = 1,
         Absent = 2,
-        Leave = 3,
         Late = 4,
         HalfDay = 5
     }
