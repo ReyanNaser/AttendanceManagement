@@ -19,7 +19,8 @@ namespace Application.Attendance
                 .WithName("GetAttendance")
                 .WithTags("Attendance")
                 .Produces<Domain.Entities.AttendanceRecord>(StatusCodes.Status200OK)
-                .ProducesProblem(StatusCodes.Status404NotFound);
+                .ProducesProblem(StatusCodes.Status404NotFound)
+                .RequireAuthorization();
         }
 
         private static async Task<IResult> Handler(Guid Id, IUnitOfWork db, CancellationToken cancellationToken)

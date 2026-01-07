@@ -14,7 +14,8 @@ namespace Application.Attendance
             app.MapPost("/checkout", Handler)
                 .WithTags("CheckOuts")
                 .Produces(StatusCodes.Status200OK)
-                .ProducesProblem(StatusCodes.Status400BadRequest);
+                .ProducesProblem(StatusCodes.Status400BadRequest)
+                .RequireAuthorization();
         }
         private static async Task<IResult> Handler(AddAttendanceRequest request, IUnitOfWork db, CancellationToken cancellationToken)
         {

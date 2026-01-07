@@ -21,7 +21,8 @@ namespace Application.Attendance
                 .WithName("GetMonthlyAbsents")
                 .WithTags("Attendance")
                 .Produces<List<AbsentDayDto>>(StatusCodes.Status200OK)
-                .ProducesProblem(StatusCodes.Status404NotFound);
+                .ProducesProblem(StatusCodes.Status404NotFound)
+                .RequireAuthorization();
         }
         private static async Task<IResult> Handler(Guid employeeId,int year,int month,IUnitOfWork db,CancellationToken cancellationToken)
         {

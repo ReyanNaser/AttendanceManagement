@@ -12,7 +12,12 @@ namespace Application.WFHRequest
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("/wfhrequest", Handler);
+            app.MapPost("/wfhrequest", Handler)
+                .WithTags("WFHRequest")
+                .WithName("WorkFromHomeRequest")
+                .Produces(StatusCodes.Status200OK)
+                .ProducesProblem(StatusCodes.Status400BadRequest)
+                .RequireAuthorization();
         }
         private static async Task<IResult> Handler(WorkFromHomeRequestDto request, IUnitOfWork db, CancellationToken cancellationToken)
         {

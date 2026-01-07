@@ -21,7 +21,8 @@ namespace Application.Employee
                 .WithTags("Employee")                
                // .WithRequestValidation<CreateEmployeeRequest>()
                 .Produces<EmployeeResponse>(StatusCodes.Status201Created)
-                .ProducesProblem(StatusCodes.Status400BadRequest);
+                .ProducesProblem(StatusCodes.Status400BadRequest)
+                .RequireAuthorization(policy => policy.RequireRole("Admin"));
         }       
 
         private async Task<IResult> Handler(

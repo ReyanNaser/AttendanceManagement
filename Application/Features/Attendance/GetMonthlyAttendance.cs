@@ -16,7 +16,8 @@ namespace Application.Attendance
             .WithTags("Attendance")
             .WithName("GetMonthlyAttendance")
             .Produces<MonthlyAttendanceResponse>(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status404NotFound);
+            .Produces(StatusCodes.Status404NotFound)
+            .RequireAuthorization();
         }
         private static async Task<IResult> Handler(Guid employeeId, int year, int month, IUnitOfWork db, CancellationToken cancellationToken)
         {

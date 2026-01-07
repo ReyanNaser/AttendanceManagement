@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Persistance;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Linq.Expressions;
@@ -12,11 +13,15 @@ public class Repository<T, TContext> : IRepository<T, TContext>
 {
     protected readonly DbContext _context;
     protected readonly DbSet<T> _dbSet;
+    protected readonly IHttpContextAccessor _httpContextAccessor;
 
-    public Repository(DbContext context)
+
+    public Repository(DbContext context, IHttpContextAccessor httpContextAccessor)
     {
         _context = context;
         _dbSet = context.Set<T>();
+        _httpContextAccessor = httpContextAccessor;
+        
     }
 
     
@@ -65,9 +70,8 @@ public class Repository<T, TContext> : IRepository<T, TContext>
     public async Task<T> AddAsync(T entity, CancellationToken cancellationToken = default)
     {
         entity.Id = Guid.NewGuid();
-        entity.CreatedBy = entity.ModifiedBy = "Admin";
+        entity.CreatedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name; 
         entity.CreatedDate = DateTime.UtcNow;
-        entity.ModifiedDate = DateTime.UtcNow;
         entity.IsActive = true;
         var entry = await _dbSet.AddAsync(entity, cancellationToken);
         return entry.Entity;
@@ -80,7 +84,7 @@ public class Repository<T, TContext> : IRepository<T, TContext>
 
     public void Update(T entity)
     {
-        entity.ModifiedBy = "Admin";
+        entity.ModifiedBy = _httpContextAccessor.HttpContext?.User.Identity?.Name;
         entity.ModifiedDate = DateTime.UtcNow;
         _dbSet.Attach(entity);
         _context.Entry(entity).State = EntityState.Modified;

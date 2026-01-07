@@ -14,7 +14,8 @@ namespace Application.LeaveRequest
         {
             app.MapPost("/leaverequest", Handler)
                 .WithName("LeaveRequest")
-                .WithTags("LeaveRequest");
+                .WithTags("LeaveRequest")
+                .RequireAuthorization();
         }
         private static async Task<IResult> Handler(LeaveRequestDto request, IUnitOfWork db, CancellationToken cancellationToken)
         {

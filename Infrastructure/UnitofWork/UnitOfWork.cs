@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Persistance;
 using Infrastructure.Repository;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Infrastructure.UnitofWork;
@@ -9,29 +10,30 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly AttendanceDbContext _context;
     private IDbContextTransaction? _transaction;
-
+    protected readonly IHttpContextAccessor _httpContextAccessor;
     private IRepository<Employee, AttendanceDbContext>? _employees;
     private IRepository<AttendanceRecord, AttendanceDbContext>? _attendanceRecords;
     private IRepository<LeaveRequest, AttendanceDbContext>? _leaveRequests;
     private IRepository<WorkFromHome, AttendanceDbContext>? _workFromHomes;
 
-    public UnitOfWork(AttendanceDbContext context)
+    public UnitOfWork(AttendanceDbContext context, IHttpContextAccessor httpContextAccessor)
     {
         _context = context;
+        _httpContextAccessor = httpContextAccessor;
     }
 
 
     public IRepository<Employee, AttendanceDbContext> Employees =>
-        _employees ??= new Repository<Employee, AttendanceDbContext>(_context);
+        _employees ??= new Repository<Employee, AttendanceDbContext>(_context, _httpContextAccessor);
 
     public IRepository<AttendanceRecord, AttendanceDbContext> AttendanceRecords =>
-        _attendanceRecords ??= new Repository<AttendanceRecord, AttendanceDbContext>(_context);
+        _attendanceRecords ??= new Repository<AttendanceRecord, AttendanceDbContext>(_context, _httpContextAccessor);
 
     public IRepository<LeaveRequest, AttendanceDbContext> LeaveRequests =>
-        _leaveRequests ??= new Repository<LeaveRequest, AttendanceDbContext>(_context);
+        _leaveRequests ??= new Repository<LeaveRequest, AttendanceDbContext>(_context, _httpContextAccessor);
 
     public IRepository<WorkFromHome, AttendanceDbContext> WorkFromHomes =>
-        _workFromHomes ??= new Repository<WorkFromHome, AttendanceDbContext>(_context);
+        _workFromHomes ??= new Repository<WorkFromHome, AttendanceDbContext>(_context, _httpContextAccessor);
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

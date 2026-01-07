@@ -15,7 +15,8 @@ namespace Application.Employee
                 .WithName("GetEmployee")
                 .WithTags("Employee")
                 .Produces<EmployeeResponse>(StatusCodes.Status200OK)
-                .ProducesProblem(StatusCodes.Status404NotFound);
+                .ProducesProblem(StatusCodes.Status404NotFound)
+                .RequireAuthorization(policy =>policy.RequireRole("Manager"));
         }
         private static async Task<IResult> Handler(Guid Id, IUnitOfWork db, CancellationToken cancellationToken)
         {

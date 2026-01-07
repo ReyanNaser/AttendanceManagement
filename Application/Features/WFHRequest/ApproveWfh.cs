@@ -16,7 +16,8 @@ namespace Application.WFHRequest
             .WithTags("Manager Actions")
             .Produces(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest)
-            .ProducesProblem(StatusCodes.Status404NotFound);
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .RequireAuthorization(policy => policy.RequireRole("Manager"));
         }
         private static async Task<IResult> Handler(ApprovalRequestDto request, IUnitOfWork db, CancellationToken cancellationToken)
         {

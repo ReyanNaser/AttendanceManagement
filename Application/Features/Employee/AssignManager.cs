@@ -21,7 +21,8 @@ namespace Application.Employee
                 .WithName("AssignManager")
                 .WithTags("Employee")
                 .Produces<EmployeeResponse>(StatusCodes.Status201Created)
-                .ProducesProblem(StatusCodes.Status400BadRequest);
+                .ProducesProblem(StatusCodes.Status400BadRequest)
+                .RequireAuthorization(policy => policy.RequireRole("Manager"));
         }
         private static async Task<IResult> Handler(AssignManagerDto request, IUnitOfWork db, RoleService.RoleServiceClient roleClient, CancellationToken cancellationToken)
         {
