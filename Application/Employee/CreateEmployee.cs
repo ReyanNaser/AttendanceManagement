@@ -1,28 +1,33 @@
 using Application.Common;
+using Application.GrpcService;
+using AuthServiceProvider.Protos;
 using Domain.DTOs;
-using Domain.Entities;
+using FluentValidation;
 using Infrastructure.UnitofWork;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
+
 namespace Application.Employee
 {
     public class CreateEmployee : IEndpoint
     {
+        
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
             app.MapPost("/employees", Handler)
                 .WithName("CreateEmployee")
-                .WithTags("Employee")
+                .WithTags("Employee")                
+               // .WithRequestValidation<CreateEmployeeRequest>()
                 .Produces<EmployeeResponse>(StatusCodes.Status201Created)
                 .ProducesProblem(StatusCodes.Status400BadRequest);
-        }
+        }       
 
-        private static async Task<IResult> Handler(
+        private async Task<IResult> Handler(
             CreateEmployeeRequest request,
             IUnitOfWork db,
-            AuthServiceProvider.Protos.AuthService.AuthServiceClient authClient,
+            GrpcClient grpcClient,
             CancellationToken cancellationToken)
         {
             // Check if email already exists
@@ -49,28 +54,44 @@ namespace Application.Employee
             await db.Employees.AddAsync(employee, cancellationToken);
 
             
-            try 
+            
+            var grpcRequest = new AuthServiceProvider.Protos.CreateUserRequest
             {
-                var grpcRequest = new AuthServiceProvider.Protos.CreateUserRequest
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Email = request.Email,
+                Role = "Employee"
+            };
+
+            var authResponse = await grpcClient.CreateUserAsync(grpcRequest, cancellationToken);
+
+            if (!authResponse.Success)
+            {
+                return Results.BadRequest(new { Error = $"Auth User Creation Failed: {authResponse.Message}" });
+            }
+
+            if(request.ManagerId.HasValue)
+            {
+                var manager = await db.Employees
+                    .FirstOrDefaultAsync(e => e.Id == request.ManagerId);
+                if (manager == null)
                 {
-                    FirstName = request.FirstName,
-                    LastName = request.LastName,
-                    Email = request.Email,
-                    Role = "Employee"
+                    return Results.BadRequest("Manager not found.");
+                }
+
+                var grpcPromotionRequest = new AuthServiceProvider.Protos.PromotionRequest
+                {
+                    Email = manager.Email,
+                    Role = "Manager"
                 };
 
-                var authResponse = await authClient.CreateUserAsync(grpcRequest, cancellationToken: cancellationToken);
+                var authRes = await grpcClient.PromoteToManagerAsync(grpcPromotionRequest, cancellationToken);
 
-                if (!authResponse.Success)
-                {
-                    return Results.BadRequest(new { Error = $"Auth User Creation Failed: {authResponse.Message}" });
-                }
             }
-            catch (Exception ex)
-            {
-                 // Log error
-                 return Results.Problem($"gRPC Connection Failed: {ex.Message}");
-            }
+
+
+
+
 
             await db.SaveChangesAsync(cancellationToken);            
 

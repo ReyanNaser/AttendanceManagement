@@ -1,6 +1,8 @@
 using Application.Common;
+using Application.GrpcService;
 using Domain.Persistance;
 using Host.Common;
+using Host.Middleware;
 using Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +19,8 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddInfrastructure();
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 // Register all endpoints from Application assembly dynamically
 builder.Services.AddEndpoints(typeof(IEndpoint).Assembly);
@@ -32,6 +36,7 @@ builder.Services.AddGrpcClient<AuthServiceProvider.Protos.RoleService.RoleServic
     o.Address = new Uri("https://localhost:7144");
 });
 
+builder.Services.AddScoped<GrpcClient>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -62,6 +67,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseExceptionHandler();
 app.MapControllers();
 
 // Map all minimal API endpoints dynamically

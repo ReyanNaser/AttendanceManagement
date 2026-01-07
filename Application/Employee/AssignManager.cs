@@ -23,7 +23,7 @@ namespace Application.Employee
                 .Produces<EmployeeResponse>(StatusCodes.Status201Created)
                 .ProducesProblem(StatusCodes.Status400BadRequest);
         }
-        private static async Task<IResult> Handler(AssignManagerDto request, IUnitOfWork db, AuthServiceProvider.Protos.RoleService.RoleServiceClient roleClient, CancellationToken cancellationToken)
+        private static async Task<IResult> Handler(AssignManagerDto request, IUnitOfWork db, RoleService.RoleServiceClient roleClient, CancellationToken cancellationToken)
         {
 
             if (request.EmployeeIds == null || !request.EmployeeIds.Any())
@@ -49,7 +49,7 @@ namespace Application.Employee
                 return Results.NotFound("One or more employees not found.");
             }
 
-            var authRes = await roleClient.PromoteToManagerAsync( new PromotionRequest { Email = manager.Email });
+            var authRes = await roleClient.PromoteToManagerAsync( new PromotionRequest { Email = manager.Email, Role = "Manager" });
 
             if (!authRes.Success)
             {       
