@@ -7,6 +7,10 @@ using Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using static Application.Employee.CreateEmployee;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +25,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddInfrastructure();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddValidatorsFromAssemblyContaining<RequestValidator>();
+
 
 // Register all endpoints from Application assembly dynamically
 builder.Services.AddEndpoints(typeof(IEndpoint).Assembly);

@@ -1,6 +1,6 @@
 using Application.Common;
+using Application.Common.RouteValidation;
 using Application.GrpcService;
-using AuthServiceProvider.Protos;
 using Domain.DTOs;
 using FluentValidation;
 using Infrastructure.UnitofWork;
@@ -17,14 +17,53 @@ namespace Application.Employee
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
             app.MapPost("/employees", Handler)
-                .WithName("CreateEmployee")
-                .WithTags("Employee")                
-               // .WithRequestValidation<CreateEmployeeRequest>()
-                .Produces<EmployeeResponse>(StatusCodes.Status201Created)
-                .ProducesProblem(StatusCodes.Status400BadRequest)
-                .RequireAuthorization(policy => policy.RequireRole("Admin"));
+               .WithName("CreateEmployee")
+               .WithTags("Employee")
+               .WithRequestValidation<CreateEmployeeRequest>()
+               .Produces<EmployeeResponse>(StatusCodes.Status201Created)
+               .ProducesProblem(StatusCodes.Status400BadRequest)
+               .RequireAuthorization(policy => policy.RequireRole("Manager"));
         }       
 
+        public class RequestValidator: AbstractValidator<CreateEmployeeRequest>
+        {
+            public RequestValidator() 
+            {
+                RuleFor(x => x.FirstName)
+            .NotEmpty()
+            .MaximumLength(50);
+
+                RuleFor(x => x.LastName)
+                    .NotEmpty()
+                    .MaximumLength(50);
+
+                RuleFor(x => x.Email)
+                    .NotEmpty()
+                    .EmailAddress()
+                    .MaximumLength(100);
+
+                RuleFor(x => x.Address)
+                    .NotEmpty()
+                    .MaximumLength(200);
+
+                RuleFor(x => x.City)
+                    .NotEmpty()
+                    .MaximumLength(50);
+
+                RuleFor(x => x.Designation)
+                    .NotEmpty()
+                    .MaximumLength(100);
+
+                RuleFor(x => x.Department)
+                    .NotEmpty()
+                    .MaximumLength(100);
+
+                RuleFor(x => x.ManagerId)
+                    .NotEqual(Guid.Empty)
+                    .When(x => x.ManagerId.HasValue)
+                    .WithMessage("ManagerId must be a valid GUID.");
+            }
+        }
         private async Task<IResult> Handler(
             CreateEmployeeRequest request,
             IUnitOfWork db,
