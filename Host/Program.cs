@@ -1,6 +1,8 @@
+using Application;
 using Application.Common;
 using Application.GrpcService;
 using Domain.Persistance;
+using FluentValidation;
 using Host.Common;
 using Host.Middleware;
 using Infrastructure;
@@ -8,8 +10,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using static Application.Employee.CreateEmployee;
-using FluentValidation;
-using FluentValidation.AspNetCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,7 +26,7 @@ builder.Services.AddInfrastructure();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddValidatorsFromAssemblyContaining<RequestValidator>();
-
+builder.Services.AddBusinessLayer(builder.Configuration);
 
 // Register all endpoints from Application assembly dynamically
 builder.Services.AddEndpoints(typeof(IEndpoint).Assembly);
@@ -34,7 +34,7 @@ builder.Services.AddEndpoints(typeof(IEndpoint).Assembly);
 // Register gRPC Client for Auth Service
 builder.Services.AddGrpcClient<AuthServiceProvider.Protos.AuthService.AuthServiceClient>(o =>
 {
-    o.Address = new Uri("https://localhost:7144"); // Address of AuthServiceProvider
+    o.Address = new Uri("https://localhost:7144"); 
 });
 
 builder.Services.AddGrpcClient<AuthServiceProvider.Protos.RoleService.RoleServiceClient>(o =>
@@ -42,13 +42,12 @@ builder.Services.AddGrpcClient<AuthServiceProvider.Protos.RoleService.RoleServic
     o.Address = new Uri("https://localhost:7144");
 });
 
-builder.Services.AddScoped<GrpcClient>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.Authority = builder.Configuration["Authentication:Authority"];
         options.Audience = builder.Configuration["Authentication:Audience"];
-        options.RequireHttpsMetadata = false; // Set to true in production
+        options.RequireHttpsMetadata = false; 
 
         options.TokenValidationParameters = new TokenValidationParameters
         {

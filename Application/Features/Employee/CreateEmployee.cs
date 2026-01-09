@@ -1,5 +1,6 @@
 using Application.Common;
 using Application.Common.RouteValidation;
+using Application.EmailService;
 using Application.GrpcService;
 using Domain.DTOs;
 using FluentValidation;
@@ -68,6 +69,7 @@ namespace Application.Employee
             CreateEmployeeRequest request,
             IUnitOfWork db,
             GrpcClient grpcClient,
+            IEmailSender emailSender,
             CancellationToken cancellationToken)
         {
             // Check if email already exists
@@ -133,8 +135,14 @@ namespace Application.Employee
 
 
 
-            await db.SaveChangesAsync(cancellationToken);            
+            await db.SaveChangesAsync(cancellationToken);
 
+
+            await emailSender.SenEmailAsync(
+                request.Email,
+                "Welcome to the Company",
+                $"Hello {request.FirstName},\n\nWelcome to the company!\n\nRegards,\nHR Team"
+            );
             return Results.Created($"{employee.Id}",request);
         }
     }
