@@ -18,7 +18,6 @@ builder.Services.AddOpenApi();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-builder.Services.AddValidatorsFromAssemblyContaining<RequestValidator>();
 
 // This single line now handles Business Services + gRPC + Auth
 builder.Services.AddBusinessLayer(builder.Configuration);

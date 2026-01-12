@@ -1,10 +1,12 @@
 ﻿using Application.EmailService;
 using Application.GrpcService;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer; // Added
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens; // Added
 using System;
+using static Application.Employee.CreateEmployee;
 
 namespace Application
 {
@@ -14,8 +16,8 @@ namespace Application
         {
             services.AddScoped<IEmailSender, EmailSender>();
             services.AddScoped<GrpcClient>();
+            services.AddValidatorsFromAssemblyContaining<RequestValidator>();
 
-           
             services.AddGrpcClient<AuthServiceProvider.Protos.AuthService.AuthServiceClient>(o =>
             {
                 o.Address = new Uri("https://localhost:7144");
