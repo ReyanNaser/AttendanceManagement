@@ -1,11 +1,12 @@
 ﻿using Application.EmailService;
 using Application.GrpcService;
 using FluentValidation;
-using Microsoft.AspNetCore.Authentication.JwtBearer; // Added
+using Microsoft.AspNetCore.Authentication.JwtBearer; 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens; // Added
-using System;
+using Microsoft.IdentityModel.Tokens;
+using NATS.Client.Serializers.Json;
+using NATS.Client.Core;
 using static Application.Employee.CreateEmployee;
 
 namespace Application
@@ -26,6 +27,16 @@ namespace Application
             services.AddGrpcClient<AuthServiceProvider.Protos.RoleService.RoleServiceClient>(o =>
             {
                 o.Address = new Uri("https://localhost:7144");
+            });
+
+            services.AddSingleton<INatsConnection>(sp =>
+            {
+                var opts = new NatsOpts
+                {
+                    Url = "nats://localhost:4222",
+                    SerializerRegistry = NatsJsonSerializerRegistry.Default 
+                };
+                return new NatsConnection(opts);
             });
 
             // Register Authentication

@@ -1,4 +1,5 @@
 using Application.Common;
+using Application.Common.Messages;
 using Application.Common.RouteValidation;
 using Application.EmailService;
 using Application.GrpcService;
@@ -8,6 +9,7 @@ using Infrastructure.UnitofWork;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using NATS.Client.Core;
 
 
 namespace Application.Employee
@@ -68,6 +70,7 @@ namespace Application.Employee
         private async Task<IResult> Handler(
             CreateEmployeeRequest request,
             IUnitOfWork db,
+            INatsConnection natsConnection,
             GrpcClient grpcClient,
             IEmailSender emailSender,
             CancellationToken cancellationToken)
@@ -95,8 +98,8 @@ namespace Application.Employee
 
             await db.Employees.AddAsync(employee, cancellationToken);
 
-            
-            
+
+
             var grpcRequest = new AuthServiceProvider.Protos.CreateUserRequest
             {
                 FirstName = request.FirstName,
@@ -112,7 +115,9 @@ namespace Application.Employee
                 return Results.BadRequest(new { Error = $"Auth User Creation Failed: {authResponse.Message}" });
             }
 
-            if(request.ManagerId.HasValue)
+
+
+            if (request.ManagerId.HasValue)
             {
                 var manager = await db.Employees
                     .FirstOrDefaultAsync(e => e.Id == request.ManagerId);
@@ -136,6 +141,15 @@ namespace Application.Employee
 
 
             await db.SaveChangesAsync(cancellationToken);
+
+            //var userEvent = new UserCreatedEvent(
+            //     request.FirstName,
+            //     request.LastName,
+            //     request.Email,
+            //     "Employee"
+            // );
+            // "auth.user.create" is the subject
+           // await natsConnection.PublishAsync("auth.user.create", userEvent, cancellationToken: cancellationToken);
 
 
             await emailSender.SenEmailAsync(
