@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using NATS.Client.Core;
+using NATS.Client.JetStream;
 
 
 namespace Application.Employee
@@ -70,7 +71,7 @@ namespace Application.Employee
         private async Task<IResult> Handler(
             CreateEmployeeRequest request,
             IUnitOfWork db,
-            INatsConnection natsConnection,
+            INatsJSContext js,
             GrpcClient grpcClient,
             IEmailSender emailSender,
             CancellationToken cancellationToken)
@@ -100,20 +101,20 @@ namespace Application.Employee
 
 
 
-            var grpcRequest = new AuthServiceProvider.Protos.CreateUserRequest
-            {
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                Email = request.Email,
-                Role = "Employee"
-            };
+            //var grpcRequest = new AuthServiceProvider.Protos.CreateUserRequest
+            //{
+            //    FirstName = request.FirstName,
+            //    LastName = request.LastName,
+            //    Email = request.Email,
+            //    Role = "Employee"
+            //};
 
-            var authResponse = await grpcClient.CreateUserAsync(grpcRequest, cancellationToken);
+            //var authResponse = await grpcClient.CreateUserAsync(grpcRequest, cancellationToken);
 
-            if (!authResponse.Success)
-            {
-                return Results.BadRequest(new { Error = $"Auth User Creation Failed: {authResponse.Message}" });
-            }
+            //if (!authResponse.Success)
+            //{
+            //    return Results.BadRequest(new { Error = $"Auth User Creation Failed: {authResponse.Message}" });
+            //}
 
 
 
@@ -142,15 +143,18 @@ namespace Application.Employee
 
             await db.SaveChangesAsync(cancellationToken);
 
-            //var userEvent = new UserCreatedEvent(
-            //     request.FirstName,
-            //     request.LastName,
-            //     request.Email,
-            //     "Employee"
-            // );
-            // "auth.user.create" is the subject
-           // await natsConnection.PublishAsync("auth.user.create", userEvent, cancellationToken: cancellationToken);
+            var userEvent = new UserCreatedEvent(
+                 request.FirstName,
+                 request.LastName,
+                 request.Email,
+                 "Employee"
+             );
+            //"auth.user.create" is the subject
+            //await natsConnection.PublishAsync("auth.user.create", userEvent, cancellationToken: cancellationToken);
 
+            var ack = await js.PublishAsync("user.created", userEvent, cancellationToken: cancellationToken);
+            
+            ack.EnsureSuccess();
 
             await emailSender.SenEmailAsync(
                 request.Email,

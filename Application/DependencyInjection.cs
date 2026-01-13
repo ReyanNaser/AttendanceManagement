@@ -5,8 +5,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using NATS.Client.Serializers.Json;
 using NATS.Client.Core;
+using NATS.Client.JetStream;
+using NATS.Client.Serializers.Json;
 using static Application.Employee.CreateEmployee;
 
 namespace Application
@@ -34,9 +35,16 @@ namespace Application
                 var opts = new NatsOpts
                 {
                     Url = "nats://localhost:4222",
-                    SerializerRegistry = NatsJsonSerializerRegistry.Default 
+                    SerializerRegistry = NatsJsonSerializerRegistry.Default,
+                    Name = "AttendanceService"
                 };
                 return new NatsConnection(opts);
+            });
+
+            services.AddSingleton<INatsJSContext>(sp =>
+            {
+                var nats = sp.GetRequiredService<INatsConnection>();
+                return new NatsJSContext(nats);
             });
 
             // Register Authentication

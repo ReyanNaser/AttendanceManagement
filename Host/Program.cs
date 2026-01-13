@@ -1,5 +1,6 @@
 using Application;
 using Application.Common;
+using Application.Common.Messages;
 using Application.GrpcService;
 using Domain.Persistance;
 using FluentValidation;
@@ -7,6 +8,8 @@ using Host.Common;
 using Host.Middleware;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using NATS.Client.JetStream;
+
 // Removed: Microsoft.AspNetCore.Authentication.JwtBearer and Microsoft.IdentityModel.Tokens
 using static Application.Employee.CreateEmployee;
 
@@ -45,5 +48,8 @@ app.MapControllers();
 
 // Map all minimal API endpoints dynamically
 app.MapEndpoints();
+
+var js = app.Services.GetRequiredService<INatsJSContext>();
+await NatsStreamInitializer.EnsureStreamExists(js);
 
 app.Run();
