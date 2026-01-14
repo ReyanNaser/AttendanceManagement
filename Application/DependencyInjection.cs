@@ -1,5 +1,6 @@
 ﻿using Application.EmailService;
 using Application.GrpcService;
+using Application.NotificationService;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer; 
 using Microsoft.Extensions.Configuration;
@@ -19,6 +20,7 @@ namespace Application
             services.AddScoped<IEmailSender, EmailSender>();
             services.AddScoped<GrpcClient>();
             services.AddValidatorsFromAssemblyContaining<RequestValidator>();
+            services.AddScoped<INotificationService, NotificationService.NotificationService>();
 
             services.AddGrpcClient<AuthServiceProvider.Protos.AuthService.AuthServiceClient>(o =>
             {

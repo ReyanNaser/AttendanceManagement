@@ -1,4 +1,5 @@
 using Application.Common;
+using Application.NotificationService;
 using Domain.DTOs;
 using Domain.Entities;
 using Domain.Entities.Enums;
@@ -19,7 +20,7 @@ public class CheckIn : IEndpoint
             .RequireAuthorization();
     }
 
-    private static async Task<IResult> Handler(AddAttendanceRequest request,IUnitOfWork db,CancellationToken cancellationToken)
+    private static async Task<IResult> Handler(AddAttendanceRequest request,IUnitOfWork db, INotificationService nt, CancellationToken cancellationToken)
     {
         var now = DateTimeOffset.UtcNow;
         
@@ -63,6 +64,8 @@ public class CheckIn : IEndpoint
 
         await db.AttendanceRecords.AddAsync(record, cancellationToken);
         await db.SaveChangesAsync(cancellationToken);
+
+         await nt.NotifyAsync(request.EmployeeId, "Attendance Checked In", $"You have successfully checked in on {record.Date}. Status: {record.Status}", cancellationToken);
         return Results.Created("Attendance marked successfully", record);
     }
 }

@@ -1,4 +1,5 @@
 using Domain.Persistance;
+using Infrastructure.NotificationHub;
 using Infrastructure.Repository;
 using Infrastructure.UnitofWork;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +21,10 @@ public static class DependencyInjection
         services.AddHttpContextAccessor();
 
         services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
-        
+
+        services.AddSignalR();
+        services.AddScoped(typeof(IRealTimeNotifier), typeof(SignalRNotifier));
+
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         services.AddSingleton<INatsConnection>(sp =>

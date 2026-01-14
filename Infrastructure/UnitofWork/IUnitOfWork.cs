@@ -10,7 +10,7 @@ public interface IUnitOfWork : IDisposable
     IRepository<AttendanceRecord, AttendanceDbContext> AttendanceRecords { get; }
     IRepository<LeaveRequest, AttendanceDbContext> LeaveRequests { get; }
     IRepository<WorkFromHome, AttendanceDbContext> WorkFromHomes { get; }
-    
+    IRepository<Notification, AttendanceDbContext> Notifications { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     Task BeginTransactionAsync(CancellationToken cancellationToken = default);
     Task CommitTransactionAsync(CancellationToken cancellationToken = default);
