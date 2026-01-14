@@ -28,24 +28,7 @@ namespace Application
             services.AddGrpcClient<AuthServiceProvider.Protos.RoleService.RoleServiceClient>(o =>
             {
                 o.Address = new Uri("https://localhost:7144");
-            });
-
-            services.AddSingleton<INatsConnection>(sp =>
-            {
-                var opts = new NatsOpts
-                {
-                    Url = "nats://localhost:4222",
-                    SerializerRegistry = NatsJsonSerializerRegistry.Default,
-                    Name = "AttendanceService"
-                };
-                return new NatsConnection(opts);
-            });
-
-            services.AddSingleton<INatsJSContext>(sp =>
-            {
-                var nats = sp.GetRequiredService<INatsConnection>();
-                return new NatsJSContext(nats);
-            });
+            });          
 
             // Register Authentication
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

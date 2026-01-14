@@ -12,19 +12,13 @@ namespace Application.Common.Messages
     {
         public static async Task EnsureStreamExists(INatsJSContext js)
         {
-            try
-            {
-                // Define the stream configuration
+            
+                
                 var config = new StreamConfig(name: "EMPLOYEE_EVENTS", subjects: new[] { "user.>" });
 
-                // Create or update the stream idempotently
+               
                 await js.CreateStreamAsync(config);
-            }
-            catch (Exception ex)
-            {
-                // Log warning (stream might already exist or server not ready)
-                Console.WriteLine($"Stream setup warning: {ex.Message}");
-            }
+            
         }
     }
 }
