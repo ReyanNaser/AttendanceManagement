@@ -14,7 +14,7 @@ namespace Application.Common.Messages
         {
             
                 
-                var config = new StreamConfig(name: "EMPLOYEE_EVENTS", subjects: new[] { "user.>" });
+                var config = new StreamConfig(name: "EMPLOYEE_EVENTS_V2", subjects: new[] { "user.>" });
 
                
                 await js.CreateStreamAsync(config);
