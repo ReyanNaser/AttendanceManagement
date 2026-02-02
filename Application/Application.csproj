@@ -26,6 +26,7 @@
         </PackageReference>
         <PackageReference Include="NATS.Client.JetStream" />
         <PackageReference Include="NATS.Net" />
+        <PackageReference Include="Scrutor" />
 	</ItemGroup>
 
     <ItemGroup>
