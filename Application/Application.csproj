@@ -7,9 +7,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Aspire.Hosting.GitHub.Models" />
 		<PackageReference Include="FluentValidation" />
 		<PackageReference Include="FluentValidation.AspNetCore" />
 		<PackageReference Include="Grpc.Core" />
+		<PackageReference Include="MailKit" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
@@ -24,6 +26,7 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="NATS.Client" />
         <PackageReference Include="NATS.Client.JetStream" />
         <PackageReference Include="NATS.Net" />
         <PackageReference Include="Scrutor" />

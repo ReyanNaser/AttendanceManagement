@@ -2,6 +2,7 @@
 using Application.GrpcService;
 using Application.NotificationService;
 using FluentValidation;
+using Infrastructure.NotificationHub;
 using Microsoft.AspNetCore.Authentication.JwtBearer; 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,8 +10,8 @@ using Microsoft.IdentityModel.Tokens;
 using NATS.Client.Core;
 using NATS.Client.JetStream;
 using NATS.Client.Serializers.Json;
-using static Application.Employee.CreateEmployee;
 using Scrutor;
+using static Application.Employee.CreateEmployee;
 
 namespace Application
 {
@@ -22,7 +23,6 @@ namespace Application
             services.AddScoped<GrpcClient>();
             services.AddValidatorsFromAssemblyContaining<RequestValidator>();
             services.AddScoped<INotificationService, NotificationService.NotificationService>();
-
 
 
             services.AddGrpcClient<AuthServiceProvider.Protos.AuthService.AuthServiceClient>(o =>

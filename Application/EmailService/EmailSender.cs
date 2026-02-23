@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System.Net;
-using System.Net.Mail;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using MimeKit;
 
 namespace Application.EmailService
 {
@@ -13,7 +14,6 @@ namespace Application.EmailService
             _configuration = configuration;
         }
 
-
         public async Task SenEmailAsync(string email, string subject, string body)
         {
             var mail = _configuration.GetValue<string>("EMAIL_CONFIGURATION:EMAIL");
@@ -24,28 +24,21 @@ namespace Application.EmailService
             if (string.IsNullOrWhiteSpace(mail) || string.IsNullOrWhiteSpace(password))
                 throw new InvalidOperationException("Gmail email or App Password is missing.");
 
-            using var smtpClient = new SmtpClient(host, port)
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("HR Team", mail));
+            message.To.Add(new MailboxAddress("", email));
+            message.Subject = subject;
+
+            message.Body = new TextPart("plain")
             {
-                EnableSsl = true,
-                UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(mail, password)
+                Text = body
             };
 
-            using var message = new MailMessage
-            {
-                From = new MailAddress(mail, "HR Team"),
-                Subject = subject,
-                Body = body,
-                IsBodyHtml = false
-            };
-
-            message.To.Add(email);
-
-            await smtpClient.SendMailAsync(message);
+            using var smtpClient = new SmtpClient();
+            await smtpClient.ConnectAsync(host, port, true);
+            await smtpClient.AuthenticateAsync(mail, password);
+            await smtpClient.SendAsync(message);
+            await smtpClient.DisconnectAsync(true);
         }
-
     }
-
-
 }
-
