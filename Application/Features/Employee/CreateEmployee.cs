@@ -5,7 +5,7 @@ using Application.EmailService;
 using Application.GrpcService;
 using Domain.DTOs;
 using FluentValidation;
-using Infrastructure.UnitofWork;
+using Application.Common.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -70,7 +70,7 @@ namespace Application.Employee
         }
         private async Task<IResult> Handler(
             CreateEmployeeRequest request,
-            IUnitOfWork db,
+            IAttendanceDbContext db,
             INatsJSContext js,
             GrpcClient grpcClient,
             IEmailSender emailSender,

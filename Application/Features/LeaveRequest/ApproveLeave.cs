@@ -1,7 +1,7 @@
-﻿using Application.Common;
+using Application.Common;
 using Domain.DTOs;
 using Domain.Entities.Enums;
-using Infrastructure.UnitofWork;
+using Application.Common.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -20,7 +20,7 @@ public class ApproveLeave : IEndpoint
             .RequireAuthorization(policy => policy.RequireRole("Manager"));
     }
 
-    private static async Task<IResult> Handler(ApprovalRequestDto request, IUnitOfWork db,CancellationToken ct)
+    private static async Task<IResult> Handler(ApprovalRequestDto request, IAttendanceDbContext db,CancellationToken ct)
     {
         var leave = await db.LeaveRequests.FirstOrDefaultAsync(l => l.Id == request.RequestId, ct);
         if (leave == null) 

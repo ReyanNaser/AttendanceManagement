@@ -3,7 +3,7 @@ using Application.NotificationService;
 using Domain.DTOs;
 using Domain.Entities;
 using Domain.Entities.Enums;
-using Infrastructure.UnitofWork;
+using Application.Common.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -20,7 +20,7 @@ public class CheckIn : IEndpoint
             .RequireAuthorization();
     }
 
-    private static async Task<IResult> Handler(AddAttendanceRequest request,IUnitOfWork db, INotificationService nt, CancellationToken cancellationToken)
+    private static async Task<IResult> Handler(AddAttendanceRequest request,IAttendanceDbContext db, INotificationService nt, CancellationToken cancellationToken)
     {
         var now = DateTimeOffset.UtcNow;
         

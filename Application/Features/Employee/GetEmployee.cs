@@ -1,6 +1,6 @@
-﻿using Application.Common;
+using Application.Common;
 using Domain.DTOs;
-using Infrastructure.UnitofWork;
+using Application.Common.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -18,7 +18,7 @@ namespace Application.Employee
                 .ProducesProblem(StatusCodes.Status404NotFound)
                 .RequireAuthorization(policy =>policy.RequireRole("Manager"));
         }
-        private static async Task<IResult> Handler(Guid Id, IUnitOfWork db, CancellationToken cancellationToken)
+        private static async Task<IResult> Handler(Guid Id, IAttendanceDbContext db, CancellationToken cancellationToken)
         {
             var employee = await db.Employees.GetByIdAsync(Id);
             if (employee == null)

@@ -1,6 +1,6 @@
-﻿using Domain.Entities;
-using Infrastructure.NotificationHub;
-using Infrastructure.UnitofWork;
+using Domain.Entities;
+using Application.Common.Interfaces;
+using Application.Common.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +13,8 @@ namespace Application.NotificationService
     {
         
         private readonly IRealTimeNotifier _notifier;
-        private readonly IUnitOfWork _db;
-        public NotificationService(IUnitOfWork db, IRealTimeNotifier notifier)
+        private readonly IAttendanceDbContext _db;
+        public NotificationService(IAttendanceDbContext db, IRealTimeNotifier notifier)
         {
             _db = db;
             _notifier = notifier;

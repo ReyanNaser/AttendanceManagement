@@ -1,7 +1,7 @@
-﻿using Application.Common;
+using Application.Common;
 using Domain.DTOs;
 using Domain.Entities.Enums;
-using Infrastructure.UnitofWork;
+using Application.Common.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -19,7 +19,7 @@ namespace Application.WFHRequest
                 .ProducesProblem(StatusCodes.Status400BadRequest)
                 .RequireAuthorization();
         }
-        private static async Task<IResult> Handler(WorkFromHomeRequestDto request, IUnitOfWork db, CancellationToken cancellationToken)
+        private static async Task<IResult> Handler(WorkFromHomeRequestDto request, IAttendanceDbContext db, CancellationToken cancellationToken)
         {
             var today = DateOnly.FromDateTime(DateTime.UtcNow);
 

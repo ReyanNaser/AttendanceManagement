@@ -1,7 +1,7 @@
-﻿using Application.Common;
+using Application.Common;
 using Domain.DTOs;
 using Domain.Entities.Enums;
-using Infrastructure.UnitofWork;
+using Application.Common.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -19,7 +19,7 @@ namespace Application.WFHRequest
             .ProducesProblem(StatusCodes.Status404NotFound)
             .RequireAuthorization(policy => policy.RequireRole("Manager"));
         }
-        private static async Task<IResult> Handler(ApprovalRequestDto request, IUnitOfWork db, CancellationToken cancellationToken)
+        private static async Task<IResult> Handler(ApprovalRequestDto request, IAttendanceDbContext db, CancellationToken cancellationToken)
         {
             var wfh = await db.WorkFromHomes.FirstOrDefaultAsync(a => a.Id == request.RequestId);
             if (wfh == null)

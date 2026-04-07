@@ -1,13 +1,13 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Text;
 
-namespace Domain.Persistance
+namespace Infrastructure.Persistance
 {
-    public class AttendanceDbContext: DbContext
+    public class AttendanceDbContext: DbContext, Application.Common.Interfaces.IAttendanceDbContext
     {
         public AttendanceDbContext(DbContextOptions<AttendanceDbContext> options) : base(options)
         {

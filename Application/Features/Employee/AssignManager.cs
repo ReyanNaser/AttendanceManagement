@@ -1,7 +1,7 @@
-﻿using Application.Common;
+using Application.Common;
 using AuthServiceProvider.Protos;
 using Domain.DTOs;
-using Infrastructure.UnitofWork;
+using Application.Common.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -24,7 +24,7 @@ namespace Application.Employee
                 .ProducesProblem(StatusCodes.Status400BadRequest)
                 .RequireAuthorization(policy => policy.RequireRole("Manager"));
         }
-        private static async Task<IResult> Handler(AssignManagerDto request, IUnitOfWork db, RoleService.RoleServiceClient roleClient, CancellationToken cancellationToken)
+        private static async Task<IResult> Handler(AssignManagerDto request, IAttendanceDbContext db, RoleService.RoleServiceClient roleClient, CancellationToken cancellationToken)
         {
 
             if (request.EmployeeIds == null || !request.EmployeeIds.Any())

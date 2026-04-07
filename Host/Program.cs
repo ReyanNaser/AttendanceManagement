@@ -2,7 +2,7 @@ using Application;
 using Application.Common;
 using Application.Common.Messages;
 using Application.GrpcService;
-using Domain.Persistance;
+using Infrastructure.Persistance;
 using FluentValidation;
 using Host.Common;
 using Host.Middleware;

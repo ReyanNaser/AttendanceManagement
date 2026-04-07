@@ -1,5 +1,5 @@
-﻿using Application.Common;
-using Infrastructure.UnitofWork;
+using Application.Common;
+using Application.Common.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -23,10 +23,10 @@ namespace Application.Attendance
                 .RequireAuthorization();
         }
 
-        private static async Task<IResult> Handler(Guid Id, IUnitOfWork db, CancellationToken cancellationToken)
+        private static async Task<IResult> Handler(Guid Id, IAttendanceDbContext db, CancellationToken cancellationToken)
         {
-            var attendance = await db.AttendanceRecords.FindAsync(
-                a => a.EmployeeId == Id);
+            var attendance = await db.AttendanceRecords.FirstOrDefaultAsync(
+                a => a.EmployeeId == Id, cancellationToken);
             if (attendance == null)
             {
                 return Results.NotFound("Attendance Not Found");

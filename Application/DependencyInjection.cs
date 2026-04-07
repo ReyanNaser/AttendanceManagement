@@ -1,8 +1,8 @@
-﻿using Application.EmailService;
+using Application.EmailService;
 using Application.GrpcService;
 using Application.NotificationService;
 using FluentValidation;
-using Infrastructure.NotificationHub;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer; 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

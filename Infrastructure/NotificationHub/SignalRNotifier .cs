@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+using Domain.Entities;
+using Application.Common.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;

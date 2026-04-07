@@ -1,7 +1,7 @@
-﻿using Application.Common;
+using Application.Common;
 using Domain.DTOs;
 using Domain.Entities;
-using Infrastructure.UnitofWork;
+using Application.Common.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -23,7 +23,7 @@ namespace Application.Employee
         //        .Produces<EmployeeResponse>(StatusCodes.Status201Created)
         //        .ProducesProblem(StatusCodes.Status400BadRequest);
         //}
-        //private static async Task<IResult> Handler(AddManagerDto request,IUnitOfWork db,CancellationToken cancellationToken)
+        //private static async Task<IResult> Handler(AddManagerDto request,IAttendanceDbContext db,CancellationToken cancellationToken)
         //{
         //    var employeeexists = await db.Employees
         //        .AnyAsync(e => e.Id == request.EmployeeId, cancellationToken);

@@ -1,7 +1,8 @@
-using Domain.Persistance;
+using Infrastructure.Persistance;
+using Application.Common.Interfaces;
+using Infrastructure.Messaging;
+using Infrastructure.Services;
 using Infrastructure.NotificationHub;
-using Infrastructure.Repository;
-using Infrastructure.UnitofWork;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -21,12 +22,13 @@ public static class DependencyInjection
 
         services.AddHttpContextAccessor();
 
-        services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
+        services.AddScoped<IAttendanceDbContext>(provider => provider.GetRequiredService<AttendanceDbContext>());
 
         services.AddSignalR();
         services.AddScoped<IRealTimeNotifier, SignalRNotifier>();
         
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IEventPublisher, NatsEventPublisher>();
+        services.AddScoped<IIdentityService, GrpcIdentityService>();
 
         services.AddSingleton<INatsConnection>(sp =>
         {
